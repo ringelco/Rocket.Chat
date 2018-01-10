@@ -408,6 +408,7 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.user = user;
 				data.room = room;
 				data.message = message;
+				data.image_url = message.image_url;
 
 				if (message.alias) {
 					data.alias = message.alias;
