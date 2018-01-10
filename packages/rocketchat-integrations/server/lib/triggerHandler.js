@@ -391,12 +391,10 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.timestamp = message.ts;
 				data.user_id = message.u._id;
 				data.user_name = message.u.username;
-				data.text = message.msg + message.msg + message.u.username;
-				data.image_url = message.image_url;
+				data.text = message.msg ;
+
 				data.message = message;
-				data.room = room;
-				data.owner = owner;
-				data.event = event;
+
 
 				if (message.alias) {
 					data.alias = message.alias;
@@ -417,11 +415,11 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.timestamp = message.ts;
 				data.user_id = message.u._id;
 				data.user_name = message.u.username;
-				data.text = message.msg + message.msg + message.msg;
+				data.text = message.msg ;
 				data.user = user;
 				data.room = room;
 				data.message = message;
-				data.image_url = message.image_url;
+
 
 				if (message.alias) {
 					data.alias = message.alias;
