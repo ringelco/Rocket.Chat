@@ -153,6 +153,7 @@
 
 	  function parseWav(wav) {
 		  function readInt(i, bytes) {
+		  	alert("parseWav: ");
 			  var ret = 0,
 				  shft = 0;
 
@@ -162,10 +163,18 @@
 				  i++;
 				  bytes--;
 			  }
+			  alert("ret: " + ret)
 			  return ret;
 		  }
-		  if (readInt(20, 2) != 1) throw 'Invalid compression code, not PCM';
-		  if (readInt(22, 2) != 1) throw 'Invalid number of channels, not 1';
+		  if (readInt(20, 2) != 1) {
+		  	alert("not pcm");
+		  	throw 'Invalid compression code, not PCM';
+
+		  }
+		  if (readInt(22, 2) != 1) {
+		  	  alert("not 1");
+			  throw 'Invalid number of channels, not 1';
+		  }
 		  return {
 			  sampleRate: readInt(24, 4),
 			  bitsPerSample: readInt(34, 2),
