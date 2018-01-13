@@ -85,6 +85,7 @@
 
 			console.log(data);
 			console.log("Converting to Mp3");
+			alert("Converting to Mp3")
 			log.innerHTML += "n" + "Converting to Mp3";
 
 			encoderWorker.postMessage({ cmd: 'init', config:{
@@ -128,6 +129,8 @@
 				}
 			};
 		};
+
+		alert("converted from:!!");
 
 		fileReader.readAsArrayBuffer(blob);
 
