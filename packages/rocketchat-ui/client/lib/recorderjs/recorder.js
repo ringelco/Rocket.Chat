@@ -81,8 +81,12 @@
 		fileReader.onload = function(){
 			alert("umad tuuuuuuuu")
 			arrayBuffer = this.result;
-			var buffer = new Uint8Array(arrayBuffer),
-				data = parseWav(buffer);
+			alert("arrayBuffer: " + arrayBuffer)
+
+			var buffer = new Uint8Array(arrayBuffer);
+
+			alert("buffer: " + buffer);
+				var data = parseWav(buffer);
 
 			console.log(data);
 			console.log("Converting to Mp3");
