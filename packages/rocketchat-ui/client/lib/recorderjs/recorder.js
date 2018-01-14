@@ -89,7 +89,7 @@
 			console.log("Converting to Mp3");
 			log.innerHTML += "n" + "Converting to Mp3";
 
-
+			alert("Sefre marzi!");
 			encoderWorker.postMessage({ cmd: 'init', config:{
 					mode : 3,
 					channels:1,
