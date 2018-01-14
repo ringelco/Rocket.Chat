@@ -79,7 +79,6 @@
 		var fileReader = new FileReader();
 
 		fileReader.onload = function(){
-			alert("umad tuuuuuuuu")
 			arrayBuffer = this.result;
 
 			var buffer = new Uint8Array(arrayBuffer);
@@ -88,7 +87,6 @@
 
 			console.log(data);
 			console.log("Converting to Mp3");
-			alert("Converting to Mp3")
 			log.innerHTML += "n" + "Converting to Mp3";
 
 			encoderWorker.postMessage({ cmd: 'init', config:{
@@ -133,7 +131,6 @@
 			};
 		};
 
-		alert("converted from:!!");
 
 		fileReader.readAsArrayBuffer(blob);
 
@@ -155,7 +152,6 @@
 
 	  function parseWav(wav) {
 		  function readInt(i, bytes) {
-		  	alert("parseWav: ");
 			  var ret = 0,
 				  shft = 0;
 
