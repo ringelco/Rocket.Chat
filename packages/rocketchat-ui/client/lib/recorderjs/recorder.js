@@ -85,10 +85,10 @@
 
 				var data = parseWav(buffer);
 
-				alert("oomad birooon!!!!");
-				console.log(data);
-				console.log("Converting to Mp3");
-				log.innerHTML += "n" + "Converting to Mp3";
+				//alert("oomad birooon!!!!");
+				//console.log(data);
+				//console.log("Converting to Mp3");
+				//log.innerHTML += "n" + "Converting to Mp3";
 
 				alert("Sefre marzi!");
 				encoderWorker.postMessage({
@@ -157,7 +157,7 @@
 		}
 
 		function parseWav(wav) {
-			alert("samples: " +  wav.subarray(44));
+			//alert("samples: " +  wav.subarray(44));
 			function readInt(i, bytes) {
 
 				alert("i: " + i + "  bytes: " + bytes);
@@ -171,7 +171,7 @@
 					bytes--;
 				}
 
-				alert("ret: " + ret);
+				//alert("ret: " + ret);
 				return ret;
 			}
 
