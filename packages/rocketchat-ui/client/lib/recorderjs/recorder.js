@@ -89,14 +89,17 @@
 			console.log("Converting to Mp3");
 			log.innerHTML += "n" + "Converting to Mp3";
 
+
 			encoderWorker.postMessage({ cmd: 'init', config:{
 					mode : 3,
 					channels:1,
 					samplerate: data.sampleRate,
 					bitrate: data.bitsPerSample
 				}});
+			alert("First Post!");
 
 			encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
+			alert("Second Post!");
 			encoderWorker.postMessage({ cmd: 'finish'});
 			encoderWorker.onmessage = function(e) {
 				if (e.data.cmd == 'data') {
@@ -104,6 +107,7 @@
 					console.log("Done converting to Mp3");
 					log.innerHTML += "n" + "Done converting to Mp3";
 
+					alert("Done Converting to Mp3");
 					/*var audio = new Audio();
                     audio.src = 'data:audio/mp3;base64,'+encode64(e.data.buf);
                     audio.play();*/
