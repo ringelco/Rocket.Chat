@@ -81,11 +81,9 @@
 		fileReader.onload = function(){
 			alert("umad tuuuuuuuu")
 			arrayBuffer = this.result;
-			alert("arrayBuffer: " + arrayBuffer)
 
 			var buffer = new Uint8Array(arrayBuffer);
 
-			alert("buffer: " + buffer);
 				var data = parseWav(buffer);
 
 			console.log(data);
