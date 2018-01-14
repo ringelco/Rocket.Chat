@@ -161,7 +161,6 @@
 				  i++;
 				  bytes--;
 			  }
-			  alert("ret: " + ret)
 			  return ret;
 		  }
 		  if (readInt(20, 2) != 1) {
