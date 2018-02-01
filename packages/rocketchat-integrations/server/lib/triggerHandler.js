@@ -392,9 +392,8 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.user_id = message.u._id;
 				data.user_name = message.u.username;
 				data.text = message.msg ;
-
 				data.message = message;
-
+				data.usersTo.username = room.usersTo.username;
 
 				if (message.alias) {
 					data.alias = message.alias;
@@ -419,6 +418,7 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.user = user;
 				data.room = room;
 				data.message = message;
+				data.usersTo.username = room.usersTo.username;
 
 
 				if (message.alias) {
