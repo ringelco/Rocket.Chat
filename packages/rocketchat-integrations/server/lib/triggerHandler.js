@@ -395,7 +395,7 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.message = message;
 				//data.room.usersTo.username = room.usersTo.username;
 				data.room = room;
-				data.messageTo = message.getUsers();
+				//data.messageTo = message.getUsers();
 				//data.amin = owner.username;
 				//data.receiverId = message.receiverId;
 
