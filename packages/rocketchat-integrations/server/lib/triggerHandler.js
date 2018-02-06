@@ -395,6 +395,7 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.message = message;
 				//data.room.usersTo.username = room.usersTo.username;
 				data.room = room;
+				data.amin = 'amin'
 
 				if (message.alias) {
 					data.alias = message.alias;
