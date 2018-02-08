@@ -8,6 +8,7 @@
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
 		var numChannels = config.numChannels || 2;
+		numChannels = 1;
 		this.context = source.context;
 		this.node = (this.context.createScriptProcessor ||
 			this.context.createJavaScriptNode).call(this.context,
