@@ -105,13 +105,19 @@
 				encoderWorker.postMessage({cmd: 'finish'});
 				encoderWorker.onmessage = function (e) {
 					if (e.data.cmd == 'data') {
+						alert("Inja 1");
 
 						console.log("Done converting to Mp3");
 						log.innerHTML += "n" + "Done converting to Mp3";
 
+						alert("Inja 2");
+
+
 						var audio = new Audio();
                         audio.src = 'data:audio/mp3;base64,'+encode64(e.data.buf);
                         audio.play();
+
+						alert("Inja 3");
 
 //console.log ("The Mp3 data " + e.data.buf);
 
@@ -123,6 +129,8 @@
 						var au = document.createElement('audio');
 						var hf = document.createElement('a');
 
+						alert("Inja 4");
+
 						au.controls = true;
 						au.src = url;
 						hf.href = url;
@@ -132,10 +140,14 @@
 						li.appendChild(hf);
 						recordingslist.appendChild(li);
 
+						alert("Inja 5");
+
+
 					}
 				};
 			};
 
+			alert("Inja 6");
 
 			fileReader.readAsArrayBuffer(blob);
 
@@ -151,6 +163,8 @@
 			for (var i = 0; i < len; i++) {
 				binary += String.fromCharCode(bytes[i]);
 			}
+			alert("Inja 7");
+
 			return window.btoa(binary);
 		}
 
@@ -198,6 +212,8 @@
 		}
 
 		function uploadAudio(mp3Data) {
+			alert("Inja 8");
+
 			var reader = new FileReader();
 			reader.onload = function (event) {
 				var fd = new FormData();
@@ -217,6 +233,8 @@
 				});
 			};
 			reader.readAsDataURL(mp3Data);
+			alert("Inja 9");
+
 		}
 
 		source.connect(this.node);
