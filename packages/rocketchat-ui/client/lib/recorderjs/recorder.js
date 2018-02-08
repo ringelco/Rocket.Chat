@@ -1,9 +1,7 @@
 (function (window) {
 
 	var WORKER_PATH = 'recorderWorker.js';
-	var encoderWorker = new Worker('mp3Worker.js');
-
-	alert('start recorder.js');
+	//var encoderWorker = new Worker('mp3Worker.js');
 
 	var Recorder = function (source, cfg) {
 		var config = cfg || {};
@@ -74,7 +72,7 @@
 		worker.onmessage = function (e) {
 			var blob = e.data;
 
-			//to change wave to mp3
+			/*//to change wave to mp3
 			// Code by monem from the link: http://audior.ec/blog/recording-mp3-using-only-html5-and-javascript-recordmp3-js/
 
 			var arrayBuffer;
@@ -104,6 +102,7 @@
 				encoderWorker.postMessage({cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples)});
 				encoderWorker.postMessage({cmd: 'finish'});
 				encoderWorker.onmessage = function (e) {
+					alert("vaared shod onmessage!")
 					if (e.data.cmd == 'data') {
 						alert("Inja 1");
 
@@ -147,7 +146,7 @@
 				};
 			};
 
-			alert("Inja 6");
+			alert("Inja 6");*/
 
 			fileReader.readAsArrayBuffer(blob);
 
