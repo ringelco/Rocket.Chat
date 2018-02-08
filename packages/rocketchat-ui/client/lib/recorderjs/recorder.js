@@ -109,8 +109,8 @@
 					if (e.data.cmd == 'data') {
 						alert('inja 10');
 
-						console.log("Done converting to Mp3");
-						log.innerHTML += "\n" + "Done converting to Mp3";
+						// console.log("Done converting to Mp3");
+						// log.innerHTML += "\n" + "Done converting to Mp3";
 
 						/*var audio = new Audio();
                         audio.src = 'data:audio/mp3;base64,'+encode64(e.data.buf);
@@ -118,8 +118,12 @@
 
 						//console.log ("The Mp3 data " + e.data.buf);
 
+
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {type: 'audio/mp3'});
-						uploadAudio(mp3Blob);
+
+						blob = mp3Blob;
+						alert('inja 21');
+						//uploadAudio(mp3Blob);
 
 						var url = 'data:audio/mp3;base64,'+encode64(e.data.buf);
 						var li = document.createElement('li');
@@ -134,6 +138,7 @@
 						li.appendChild(au);
 						li.appendChild(hf);
 						recordingslist.appendChild(li);
+						alert('inja 22');
 
 					}
 				};
