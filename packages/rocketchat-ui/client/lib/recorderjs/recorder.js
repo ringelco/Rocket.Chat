@@ -91,9 +91,9 @@
 					data = parseWav(buffer);
 
 				alert('inja 8');
-				console.log(data);
-				console.log("Converting to Mp3");
-				log.innerHTML += "\n" + "Converting to Mp3";
+				//console.log(data);
+				//console.log("Converting to Mp3");
+				//log.innerHTML += "\n" + "Converting to Mp3";
 
 				encoderWorker.postMessage({ cmd: 'init', config:{
 						mode : 3,
