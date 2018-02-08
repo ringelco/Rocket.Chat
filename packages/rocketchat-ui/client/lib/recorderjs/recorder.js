@@ -24,9 +24,9 @@
 			currCallback;
 
 		this.node.onaudioprocess = function(e){
-			alert('inja 2');
+			//alert('inja 2');
 			if (!recording) return;
-			alert('inja 3');
+			//alert('inja 3');
 			var buffer = [];
 			for (var channel = 0; channel < numChannels; channel++){
 				buffer.push(e.inputBuffer.getChannelData(channel));
