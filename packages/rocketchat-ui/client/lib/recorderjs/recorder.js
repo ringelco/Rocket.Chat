@@ -143,10 +143,14 @@
 					}
 				};
 			};
-
+			alert('inja 24');
 			fileReader.readAsArrayBuffer(blob);
+			alert('inja 25');
+
+			alert(blob);
 
 			currCallback(blob);
+			alert('inja 26');
 		}
 
 
