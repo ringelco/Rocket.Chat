@@ -25,8 +25,7 @@ this.onmessage = function(e){
 
 function init(config){
   sampleRate = config.sampleRate;
-  // numChannels = config.numChannels;
-	numChannels = 1;
+  numChannels = config.numChannels;
   initBuffers();
 }
 
