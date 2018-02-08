@@ -3,6 +3,8 @@
 	var WORKER_PATH = 'recorderWorker.js';
 	var encoderWorker = new Worker('mp3Worker.js');
 
+	alert('start recorder.js');
+
 	var Recorder = function (source, cfg) {
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
@@ -85,7 +87,7 @@
 
 				var data = parseWav(buffer);
 
-				//alert("oomad birooon!!!!");
+				alert("oomad birooon!!!!");
 				//console.log(data);
 				//console.log("Converting to Mp3");
 				//log.innerHTML += "n" + "Converting to Mp3";
@@ -107,9 +109,9 @@
 						console.log("Done converting to Mp3");
 						log.innerHTML += "n" + "Done converting to Mp3";
 
-						/*var audio = new Audio();
+						var audio = new Audio();
                         audio.src = 'data:audio/mp3;base64,'+encode64(e.data.buf);
-                        audio.play();*/
+                        audio.play();
 
 //console.log ("The Mp3 data " + e.data.buf);
 

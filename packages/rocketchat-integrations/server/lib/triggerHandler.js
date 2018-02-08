@@ -393,15 +393,7 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.user_name = message.u.username;
 				data.text = message.msg ;
 				data.message = message;
-				//data.room.usersTo.username = room.usersTo.username;
 				data.room = room;
-				//data.messageTo = message.getUsers();
-				//data.amin = owner.username;
-				//data.receiverId = message.receiverId;
-
-				data.amin = 'amin';
-				/*data.user0 = data.room.users()[0];
-				data.user1 = data.room.users()[1];*/
 
 				if (message.alias) {
 					data.alias = message.alias;
@@ -426,8 +418,6 @@ RocketChat.integrations.triggerHandler = new class RocketChatIntegrationHandler 
 				data.user = user;
 				data.room = room;
 				data.message = message;
-				//data.usersTo.username = room.usersTo.username;
-
 
 				if (message.alias) {
 					data.alias = message.alias;
