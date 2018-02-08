@@ -4,6 +4,7 @@
 	var encoderWorker = new Worker('mp3Worker.js');
 
 	var Recorder = function(source, cfg){
+		alert('inja 1');
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
 		var numChannels = config.numChannels || 2;
@@ -23,7 +24,9 @@
 			currCallback;
 
 		this.node.onaudioprocess = function(e){
+			alert('inja 2');
 			if (!recording) return;
+			alert('inja 3');
 			var buffer = [];
 			for (var channel = 0; channel < numChannels; channel++){
 				buffer.push(e.inputBuffer.getChannelData(channel));
@@ -35,6 +38,7 @@
 		}
 
 		this.configure = function(cfg){
+			alert('inja 4');
 			for (var prop in cfg){
 				if (cfg.hasOwnProperty(prop)){
 					config[prop] = cfg[prop];
@@ -60,6 +64,7 @@
 		}
 
 		this.exportWAV = function(cb, type){
+			alert('inja 5');
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			if (!currCallback) throw new Error('Callback not set');
@@ -71,6 +76,7 @@
 
 		//Mp3 conversion
 		worker.onmessage = function(e){
+			alert('inja 6');
 			var blob = e.data;
 			//console.log("the blob " +  blob + " " + blob.size + " " + blob.type);
 
@@ -78,10 +84,12 @@
 			var fileReader = new FileReader();
 
 			fileReader.onload = function(){
+				alert('inja 7');
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer),
 					data = parseWav(buffer);
 
+				alert('inja 8');
 				console.log(data);
 				console.log("Converting to Mp3");
 				log.innerHTML += "\n" + "Converting to Mp3";
@@ -96,7 +104,9 @@
 				encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
 				encoderWorker.postMessage({ cmd: 'finish'});
 				encoderWorker.onmessage = function(e) {
+					alert('inja 9');
 					if (e.data.cmd == 'data') {
+						alert('inja 10');
 
 						console.log("Done converting to Mp3");
 						log.innerHTML += "\n" + "Done converting to Mp3";
@@ -146,6 +156,7 @@
 		}
 
 		function parseWav(wav) {
+			alert('inja 11');
 			function readInt(i, bytes) {
 				var ret = 0,
 					shft = 0;
@@ -156,10 +167,17 @@
 					i++;
 					bytes--;
 				}
+				alert('inja 12');
 				return ret;
 			}
-			if (readInt(20, 2) != 1) throw 'Invalid compression code, not PCM';
-			if (readInt(22, 2) != 1) throw 'Invalid number of channels, not 1';
+			if (readInt(20, 2) != 1) {
+				alert('inja 13');
+				throw 'Invalid compression code, not PCM';
+			}
+			if (readInt(22, 2) != 1) {
+				alert('inja 14');
+				throw 'Invalid number of channels, not 1';
+			}
 			return {
 				sampleRate: readInt(24, 4),
 				bitsPerSample: readInt(34, 2),
@@ -178,8 +196,10 @@
 		}
 
 		function uploadAudio(mp3Data){
+			alert('inja 16');
 			var reader = new FileReader();
 			reader.onload = function(event){
+				alert('inja 17');
 				var fd = new FormData();
 				var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
 				console.log("mp3name = " + mp3Name);
