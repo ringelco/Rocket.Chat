@@ -79,6 +79,8 @@
 		worker.onmessage = function(e){
 			alert('inja 6');
 			var blob = e.data;
+			alert("avval: " + e.data.buf);
+
 			//console.log("the blob " +  blob + " " + blob.size + " " + blob.type);
 
 			var arrayBuffer;
@@ -118,14 +120,14 @@
 
 						//console.log ("The Mp3 data " + e.data.buf);
 
-
+						alert('dovom: ' + e.data.buf);
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {type: 'audio/mp3'});
 
 						blob = mp3Blob;
 						alert('inja 21');
 						//uploadAudio(mp3Blob);
 
-						var url = 'data:audio/mp3;base64,'+encode64(e.data.buf);
+						/*var url = 'data:audio/mp3;base64,'+encode64(e.data.buf);
 						var li = document.createElement('li');
 						var au = document.createElement('audio');
 						var hf = document.createElement('a');
@@ -137,7 +139,7 @@
 						hf.innerHTML = hf.download;
 						li.appendChild(au);
 						li.appendChild(hf);
-						recordingslist.appendChild(li);
+						recordingslist.appendChild(li);*/
 						alert('inja 22');
 
 					}
