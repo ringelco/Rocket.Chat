@@ -119,12 +119,12 @@
 					}
 				};
 			};
-			fileReader.readAsArrayBuffer(blob);
-			alert('inja 25');
+			//fileReader.readAsArrayBuffer(blob);
+			//alert('inja 25');
 
 
-			currCallback(blob);
-			alert('inja 26');
+			//currCallback(blob);
+			//alert('inja 26');
 		}
 
 
