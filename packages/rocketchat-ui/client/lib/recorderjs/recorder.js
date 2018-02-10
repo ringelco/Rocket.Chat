@@ -62,7 +62,7 @@
 			worker.postMessage({ command: 'getBuffer' })
 		}
 
-		this.exportWAV = function(cb, type){
+		/*this.exportWAV = function(cb, type){
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			if (!currCallback) throw new Error('Callback not set');
@@ -70,7 +70,7 @@
 				command: 'exportWAV',
 				type: type
 			});
-		}
+		}*/
 
 		//Mp3 conversion
 		worker.onmessage = function(e){
