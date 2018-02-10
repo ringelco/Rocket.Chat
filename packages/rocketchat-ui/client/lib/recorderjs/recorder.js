@@ -65,9 +65,10 @@
 		}
 
 		this.exportWAV = function(cb, type){
-			alert('inja 5');
+			alert('inja aaaamadim');
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
+			alert('type: ' + type);
 			if (!currCallback) throw new Error('Callback not set');
 			worker.postMessage({
 				command: 'exportWAV',
@@ -77,22 +78,18 @@
 
 		//Mp3 conversion
 		worker.onmessage = function(e){
-			alert('inja 6');
 			var blob = e.data;
-			alert("avval: " + e.data.buf);
 
-			//console.log("the blob " +  blob + " " + blob.size + " " + blob.type);
 
 			var arrayBuffer;
 			var fileReader = new FileReader();
 
 			fileReader.onload = function(){
-				alert('inja 7');
+				alert('onload!');
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer),
 					data = parseWav(buffer);
 
-				alert('inja 8');
 				//console.log(data);
 				//console.log("Converting to Mp3");
 				//log.innerHTML += "\n" + "Converting to Mp3";
@@ -107,49 +104,21 @@
 				encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
 				encoderWorker.postMessage({ cmd: 'finish'});
 				encoderWorker.onmessage = function(e) {
-					alert('inja 9');
 					if (e.data.cmd == 'data') {
-						alert('inja 10');
 
-						// console.log("Done converting to Mp3");
-						// log.innerHTML += "\n" + "Done converting to Mp3";
+						alert(' converting to Mp3');
 
-						/*var audio = new Audio();
-                        audio.src = 'data:audio/mp3;base64,'+encode64(e.data.buf);
-                        audio.play();*/
-
-						//console.log ("The Mp3 data " + e.data.buf);
-
-						alert('dovom: ' + e.data.buf);
-						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {type: 'audio/mp3'});
-
-						blob = mp3Blob;
-						alert('inja 21');
-						//uploadAudio(mp3Blob);
-
-						/*var url = 'data:audio/mp3;base64,'+encode64(e.data.buf);
-						var li = document.createElement('li');
-						var au = document.createElement('audio');
-						var hf = document.createElement('a');
-
-						au.controls = true;
-						au.src = url;
-						hf.href = url;
-						hf.download = 'audio_recording_' + new Date().getTime() + '.mp3';
-						hf.innerHTML = hf.download;
-						li.appendChild(au);
-						li.appendChild(hf);
-						recordingslist.appendChild(li);*/
-						alert('inja 22');
+						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
+							type: 'audio/mp3'
+						});
+						global[self.callback](self, mp3Blob, config.element);
 
 					}
 				};
 			};
-			alert('inja 24');
 			fileReader.readAsArrayBuffer(blob);
 			alert('inja 25');
 
-			alert(blob);
 
 			currCallback(blob);
 			alert('inja 26');
