@@ -65,7 +65,6 @@
 		this.exportWAV = function(cb, type){
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
-			alert('type: ' + type);
 			if (!currCallback) throw new Error('Callback not set');
 			worker.postMessage({
 				command: 'exportWAV',
@@ -97,22 +96,17 @@
 				encoderWorker.onmessage = function(e) {
 					if (e.data.cmd == 'data') {
 
-						alert(' converting to Mp3');
-
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 							type: 'audio/mp3'
 						});
-						//global[self.callback](self, mp3Blob, config.element);
+						fileReader.readAsArrayBuffer(mp3Blob);
 						currCallback(mp3Blob);
-
-						alert('inja tamoom shod?');
-
 					}
 				};
 			};
-			fileReader.readAsArrayBuffer(blob);
+			/*fileReader.readAsArrayBuffer(blob);
 
-			currCallback(blob);
+			currCallback(blob);*/
 		}
 
 
@@ -167,17 +161,6 @@
 		source.connect(this.node);
 		this.node.connect(this.context.destination);    //this should not be necessary
 	};
-
-	/*Recorder.forceDownload = function(blob, filename){
-      console.log("Force download");
-      var url = (window.URL || window.webkitURL).createObjectURL(blob);
-      var link = window.document.createElement('a');
-      link.href = url;
-      link.download = filename || 'output.wav';
-      var click = document.createEvent("Event");
-      click.initEvent("click", true, true);
-      link.dispatchEvent(click);
-    }*/
 
 	window.Recorder = Recorder;
 
