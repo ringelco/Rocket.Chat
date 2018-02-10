@@ -63,13 +63,13 @@
 		}
 
 		this.exportWAV = function(cb, type){
-			/*currCallback = cb || config.callback;
+			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			if (!currCallback) throw new Error('Callback not set');
 			worker.postMessage({
 				command: 'exportWAV',
 				type: type
-			});*/
+			});
 		}
 
 		//Mp3 conversion
@@ -99,12 +99,13 @@
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 							type: 'audio/mp3'
 						});
+						fileReader.readAsArrayBuffer(mp3Blob);
 						currCallback(mp3Blob);
 					}
 				};
 			};
-			fileReader.readAsArrayBuffer(blob);
-			currCallback(blob);
+			// fileReader.readAsArrayBuffer(blob);
+			// currCallback(blob);
 		}
 
 
