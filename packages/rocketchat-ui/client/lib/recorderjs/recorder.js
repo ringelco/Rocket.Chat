@@ -4,7 +4,6 @@
 	var encoderWorker = new Worker('mp3Worker.js');
 
 	var Recorder = function(source, cfg){
-		alert('inja 1');
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
 		var numChannels = config.numChannels || 2;
@@ -39,7 +38,6 @@
 		}
 
 		this.configure = function(cfg){
-			alert('inja 4');
 			for (var prop in cfg){
 				if (cfg.hasOwnProperty(prop)){
 					config[prop] = cfg[prop];
@@ -65,7 +63,6 @@
 		}
 
 		this.exportWAV = function(cb, type){
-			alert('inja aaaamadim');
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			alert('type: ' + type);
@@ -80,19 +77,13 @@
 		worker.onmessage = function(e){
 			var blob = e.data;
 
-
 			var arrayBuffer;
 			var fileReader = new FileReader();
 
 			fileReader.onload = function(){
-				alert('onload!');
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer),
 					data = parseWav(buffer);
-
-				//console.log(data);
-				//console.log("Converting to Mp3");
-				//log.innerHTML += "\n" + "Converting to Mp3";
 
 				encoderWorker.postMessage({ cmd: 'init', config:{
 						mode : 3,
@@ -119,12 +110,9 @@
 					}
 				};
 			};
-			//fileReader.readAsArrayBuffer(blob);
-			//alert('inja 25');
+			fileReader.readAsArrayBuffer(blob);
 
-
-			//currCallback(blob);
-			//alert('inja 26');
+			currCallback(blob);
 		}
 
 
@@ -140,7 +128,6 @@
 		}
 
 		function parseWav(wav) {
-			alert('inja 11');
 			function readInt(i, bytes) {
 				var ret = 0,
 					shft = 0;
@@ -151,15 +138,12 @@
 					i++;
 					bytes--;
 				}
-				alert('inja 12');
 				return ret;
 			}
 			if (readInt(20, 2) != 1) {
-				alert('inja 13');
 				throw 'Invalid compression code, not PCM';
 			}
 			if (readInt(22, 2) != 1) {
-				alert('inja 14');
 				throw 'Invalid number of channels, not 1';
 			}
 			return {
@@ -179,29 +163,6 @@
 			return f32Buffer;
 		}
 
-		function uploadAudio(mp3Data){
-			alert('inja 16');
-			var reader = new FileReader();
-			reader.onload = function(event){
-				alert('inja 17');
-				var fd = new FormData();
-				var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
-				console.log("mp3name = " + mp3Name);
-				fd.append('fname', mp3Name);
-				fd.append('data', event.target.result);
-				$.ajax({
-					type: 'POST',
-					url: 'upload.php',
-					data: fd,
-					processData: false,
-					contentType: false
-				}).done(function(data) {
-					//console.log(data);
-					log.innerHTML += "\n" + data;
-				});
-			};
-			reader.readAsDataURL(mp3Data);
-		}
 
 		source.connect(this.node);
 		this.node.connect(this.context.destination);    //this should not be necessary
