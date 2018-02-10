@@ -99,14 +99,13 @@
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 							type: 'audio/mp3'
 						});
-						fileReader.readAsArrayBuffer(mp3Blob);
 						currCallback(mp3Blob);
 					}
 				};
 			};
-			/*fileReader.readAsArrayBuffer(blob);
+			//fileReader.readAsArrayBuffer(blob);
 
-			currCallback(blob);*/
+			currCallback(blob);
 		}
 
 
