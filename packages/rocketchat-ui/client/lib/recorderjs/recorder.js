@@ -111,7 +111,10 @@
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 							type: 'audio/mp3'
 						});
-						global[self.callback](self, mp3Blob, config.element);
+						//global[self.callback](self, mp3Blob, config.element);
+						currCallback(mp3Blob);
+
+						alert('inja tamoom shod?');
 
 					}
 				};
