@@ -103,8 +103,7 @@
 					}
 				};
 			};
-			//fileReader.readAsArrayBuffer(blob);
-
+			fileReader.readAsArrayBuffer(blob);
 			currCallback(blob);
 		}
 
