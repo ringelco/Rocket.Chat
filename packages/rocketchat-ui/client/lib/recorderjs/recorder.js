@@ -93,18 +93,18 @@
 
 				encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
 				encoderWorker.postMessage({ cmd: 'finish'});
-				encoderWorker.onmessage = function(e) {
-					if (e.data.cmd == 'data') {
-						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
-							type: 'audio/mp3'
-						});
-						currCallback(mp3Blob);
-					}
-				};
 			};
 			fileReader.readAsArrayBuffer(blob);
 		}
 
+		encoderWorker.onmessage = function(e) {
+			if (e.data.cmd == 'data') {
+				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
+					type: 'audio/mp3'
+				});
+				currCallback(mp3Blob);
+			}
+		};
 
 		function encode64(buffer) {
 			var binary = '',
