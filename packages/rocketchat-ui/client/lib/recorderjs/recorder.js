@@ -1,6 +1,6 @@
 (function(window){
 
-	var WORKER_PATH = 'mp3Worker.js';
+	var WORKER_PATH = 'recorderWorker.js';
 	var encoderWorker = new Worker('mp3Worker.js');
 
 	var Recorder = function(source, cfg){
@@ -80,7 +80,6 @@
 			var fileReader = new FileReader();
 
 			fileReader.onload = function(){
-				alert('fileReader.onload');
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer),
 					data = parseWav(buffer);
@@ -95,19 +94,15 @@
 				encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
 				encoderWorker.postMessage({ cmd: 'finish'});
 				encoderWorker.onmessage = function(e) {
-					alert('encoderWorker.onmessage');
 					if (e.data.cmd == 'data') {
-
 						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 							type: 'audio/mp3'
 						});
-						alert('encoderWorker.onmessage before callback');
 						currCallback(mp3Blob);
 					}
 				};
 			};
 			fileReader.readAsArrayBuffer(blob);
-			currCallback(blob);
 		}
 
 
