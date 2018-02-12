@@ -24,7 +24,7 @@
 			currCallback;
 
 		this.node.onaudioprocess = function(e){
-			//alert('inja 2');
+			// alert('inja 11111');
 			if (!recording) return;
 			//alert('inja 3');
 			var buffer = [];
@@ -63,6 +63,7 @@
 		}
 
 		this.exportWAV = function(cb, type){
+			alert('exportWav 2');
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			if (!currCallback) throw new Error('Callback not set');
@@ -74,6 +75,7 @@
 
 		//Mp3 conversion
 		worker.onmessage = function(e){
+			alert('worker | onMessage: ')
 			var blob = e.data;
 
 			var arrayBuffer;
@@ -98,6 +100,7 @@
 		}
 
 		encoderWorker.onmessage = function(e) {
+			alert('mp3 converting')
 			if (e.data.cmd == 'data') {
 				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 					type: 'audio/mp3'
