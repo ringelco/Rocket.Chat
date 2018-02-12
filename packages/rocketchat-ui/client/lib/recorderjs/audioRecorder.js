@@ -44,7 +44,6 @@ this.AudioRecorder = new class {
 	}
 
 	getBlob(cb) {
-		alert ('getBlob: 1');
 
 		return this.recorder.exportWAV(cb);
 

@@ -30,7 +30,6 @@ function init(config){
 }
 
 function record(inputBuffer){
-	alert('record | numChannels: ' + numChannels);
   for (var channel = 0; channel < numChannels; channel++){
     recBuffers[channel].push(inputBuffer[channel]);
   }
@@ -39,8 +38,6 @@ function record(inputBuffer){
 
 function exportWAV(type){
   var buffers = [];
-	alert('exportWAV 3 | numChannels: ' + numChannels);
-
 	for (var channel = 0; channel < numChannels; channel++){
     buffers.push(mergeBuffers(recBuffers[channel], recLength));
   }
