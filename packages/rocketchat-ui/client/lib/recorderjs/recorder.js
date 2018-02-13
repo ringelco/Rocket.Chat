@@ -62,12 +62,14 @@
 			worker.postMessage({ command: 'getBuffer' })
 		}
 
-		this.exportWAV = function(cb, type){
+		this.exportMP3 = function(cb, type){
 			currCallback = cb || config.callback;
-			type = type || config.type || 'audio/wav';
+			//type = type || config.type || 'audio/wav';
+			type = 'audio/mp3';
 			if (!currCallback) throw new Error('Callback not set');
 			worker.postMessage({
-				command: 'exportWAV',
+				//command: 'exportWAV',
+				command: 'exportMP3',
 				type: type
 			});
 		}
@@ -152,7 +154,6 @@
 			}
 			return f32Buffer;
 		}
-
 
 		source.connect(this.node);
 		this.node.connect(this.context.destination);    //this should not be necessary
