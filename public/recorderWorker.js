@@ -68,8 +68,8 @@ function exportMP3(type) {
 		var interleaved = buffers[0];
 	}
 
-	var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
-		type: 'audio/mp3'
+	var mp3Blob = new Blob([new Uint8Array(interleaved)], {
+		type: type
 	});
 	//var dataview = encodeWAV(interleaved);
 	//var audioBlob = new Blob([dataview], {type: type});

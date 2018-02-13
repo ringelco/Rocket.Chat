@@ -1,9 +1,9 @@
-(function(window){
+(function (window) {
 
 	var WORKER_PATH = 'recorderWorker.js';
 	var encoderWorker = new Worker('mp3Worker.js');
 
-	var Recorder = function(source, cfg){
+	var Recorder = function (source, cfg) {
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
 		var numChannels = config.numChannels || 2;
@@ -23,12 +23,12 @@
 		var recording = false,
 			currCallback;
 
-		this.node.onaudioprocess = function(e){
+		this.node.onaudioprocess = function (e) {
 			// alert('inja 11111');
 			if (!recording) return;
 			//alert('inja 3');
 			var buffer = [];
-			for (var channel = 0; channel < numChannels; channel++){
+			for (var channel = 0; channel < numChannels; channel++) {
 				buffer.push(e.inputBuffer.getChannelData(channel));
 			}
 			worker.postMessage({
@@ -37,32 +37,32 @@
 			});
 		}
 
-		this.configure = function(cfg){
-			for (var prop in cfg){
-				if (cfg.hasOwnProperty(prop)){
+		this.configure = function (cfg) {
+			for (var prop in cfg) {
+				if (cfg.hasOwnProperty(prop)) {
 					config[prop] = cfg[prop];
 				}
 			}
 		}
 
-		this.record = function(){
+		this.record = function () {
 			recording = true;
 		}
 
-		this.stop = function(){
+		this.stop = function () {
 			recording = false;
 		}
 
-		this.clear = function(){
-			worker.postMessage({ command: 'clear' });
+		this.clear = function () {
+			worker.postMessage({command: 'clear'});
 		}
 
-		this.getBuffer = function(cb) {
+		this.getBuffer = function (cb) {
 			currCallback = cb || config.callback;
-			worker.postMessage({ command: 'getBuffer' })
+			worker.postMessage({command: 'getBuffer'})
 		}
 
-		this.exportMP3 = function(cb, type){
+		this.exportMP3 = function (cb, type) {
 			currCallback = cb || config.callback;
 			//type = type || config.type || 'audio/wav';
 			type = 'audio/mp3';
@@ -75,31 +75,33 @@
 		}
 
 		//Mp3 conversion
-		worker.onmessage = function(e){
+		worker.onmessage = function (e) {
 			var blob = e.data;
 
 			var arrayBuffer;
 			var fileReader = new FileReader();
 
-			fileReader.onload = function(){
+			fileReader.onload = function () {
 				arrayBuffer = this.result;
-				var buffer = new Uint8Array(arrayBuffer),
-					data = parseWav(buffer);
+				var buffer = new Uint8Array(arrayBuffer);
+				var data = parseWav(buffer);
 
-				encoderWorker.postMessage({ cmd: 'init', config:{
-						mode : 3,
-						channels:1,
+				encoderWorker.postMessage({
+					cmd: 'init', config: {
+						mode: 3,
+						channels: 1,
 						samplerate: data.sampleRate,
 						bitrate: data.bitsPerSample
-					}});
+					}
+				});
 
-				encoderWorker.postMessage({ cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples) });
-				encoderWorker.postMessage({ cmd: 'finish'});
+				encoderWorker.postMessage({cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples)});
+				encoderWorker.postMessage({cmd: 'finish'});
 			};
 			fileReader.readAsArrayBuffer(blob);
 		}
 
-		encoderWorker.onmessage = function(e) {
+		encoderWorker.onmessage = function (e) {
 			if (e.data.cmd == 'data') {
 				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 					type: 'audio/mp3'
@@ -110,13 +112,13 @@
 
 		function encode64(buffer) {
 			var binary = '',
-				bytes = new Uint8Array( buffer ),
+				bytes = new Uint8Array(buffer),
 				len = bytes.byteLength;
 
 			for (var i = 0; i < len; i++) {
-				binary += String.fromCharCode( bytes[ i ] );
+				binary += String.fromCharCode(bytes[i]);
 			}
-			return window.btoa( binary );
+			return window.btoa(binary);
 		}
 
 		function parseWav(wav) {
@@ -132,6 +134,7 @@
 				}
 				return ret;
 			}
+
 			if (readInt(20, 2) != 1) {
 				throw 'Invalid compression code, not PCM';
 			}
@@ -145,10 +148,10 @@
 			};
 		}
 
-		function Uint8ArrayToFloat32Array(u8a){
+		function Uint8ArrayToFloat32Array(u8a) {
 			var f32Buffer = new Float32Array(u8a.length);
 			for (var i = 0; i < u8a.length; i++) {
-				var value = u8a[i<<1] + (u8a[(i<<1)+1]<<8);
+				var value = u8a[i << 1] + (u8a[(i << 1) + 1] << 8);
 				if (value >= 0x8000) value |= ~0x7FFF;
 				f32Buffer[i] = value / 0x8000;
 			}
