@@ -37,7 +37,7 @@ RocketChat.messageBox.actions.add('Create_new', 'Audio_message', {
 			return false;
 		}
 
-		chatMessages[RocketChat.openedRoom].recording = true;
+		//chatMessages[RocketChat.openedRoom].recording = true;
 		AudioRecorder.start(function() {
 			icon.classList.add('pulse');
 			icon.style.color = 'red';
