@@ -27,38 +27,22 @@ this.AudioRecorder = new class {
 	}
 
 	stop(cb) {
-		alert('kojas?');
 
 		this.recorder.stop();
 
 		if (cb != null) {
 			this.getBlob(cb);
 		}
-
-		alert('kojast 1');
-
 		this.stream.getAudioTracks()[0].stop();
-
-		alert('kojast 2');
-
 		this.recorder.clear();
-
-		alert('kojast 3');
 
 		window.audioContext.close();
 
-		alert('kojast 4');
-
 		delete window.audioContext;
-
-		alert('kojast 5');
 
 		delete this.recorder;
 
-		alert('kojast 6');
-
 		return delete this.stream;
-		alert('kojast 7');
 
 	}
 

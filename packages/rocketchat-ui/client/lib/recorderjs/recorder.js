@@ -90,7 +90,12 @@
 
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer);
+
+				alert('before parseWave');
+
 				var data = parseWav(buffer);
+				alert('after parseWave');
+
 
 				encoderWorker.postMessage({
 					cmd: 'init', config: {
