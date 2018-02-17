@@ -64,7 +64,6 @@
 		}
 
 		this.exportWAV = function (cb, type) {
-			alert('recorder.exportWAV');
 			currCallback = cb || config.callback;
 			type = type || config.type || 'audio/wav';
 			//type = 'audio/mp3';
@@ -91,6 +90,8 @@
 
 				var data = parseWav(buffer);
 
+				alert('mp3Worker.beforeInit');
+
 				encoderWorker.postMessage({
 					cmd: 'init', config: {
 						mode: 3,
@@ -99,8 +100,12 @@
 						bitrate: data.bitsPerSample
 					}
 				});
+				alert('mp3Worker.before encode');
 
 				encoderWorker.postMessage({cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples)});
+
+				alert('mp3Worker.before finish');
+
 				encoderWorker.postMessage({cmd: 'finish'});
 
 			};
