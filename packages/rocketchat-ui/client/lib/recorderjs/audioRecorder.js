@@ -39,12 +39,27 @@ this.AudioRecorder = new class {
 
 		this.stream.getAudioTracks()[0].stop();
 
+		alert('kojast 2');
+
 		this.recorder.clear();
 
+		alert('kojast 3');
+
 		window.audioContext.close();
+
+		alert('kojast 4');
+
 		delete window.audioContext;
+
+		alert('kojast 5');
+
 		delete this.recorder;
+
+		alert('kojast 6');
+
 		return delete this.stream;
+		alert('kojast 7');
+
 	}
 
 	getBlob(cb) {
