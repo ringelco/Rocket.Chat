@@ -22,9 +22,10 @@ RocketChat.messageBox.actions.add('Create_new', 'Audio_message', {
 
 		if (chatMessages[RocketChat.openedRoom].recording) {
 			AudioRecorder.stop(function(blob) {
-				popover.close();
+
 				icon.style.color = '';
 				icon.classList.remove('pulse');
+				popover.close();
 				chatMessages[RocketChat.openedRoom].recording = false;
 				fileUpload([
 					{
