@@ -113,8 +113,10 @@
 		}
 
 		encoderWorker.onmessage = function (e) {
-
+			alert('oomad inja');
 			if (e.data.cmd == 'data') {
+				alert('oomad inja tar');
+
 				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
 					type: 'audio/mp3'
 				});
