@@ -78,7 +78,6 @@
 
 		//Mp3 conversion
 		worker.onmessage = function (e) {
-			alert('worker.onmessage');
 
 			var blob = e.data;
 
@@ -86,16 +85,11 @@
 			var fileReader = new FileReader();
 
 			fileReader.onload = function () {
-				alert('fileReader.onload');
 
 				arrayBuffer = this.result;
 				var buffer = new Uint8Array(arrayBuffer);
 
-				alert('before parseWave');
-
 				var data = parseWav(buffer);
-				alert('after parseWave');
-
 
 				encoderWorker.postMessage({
 					cmd: 'init', config: {
@@ -108,14 +102,12 @@
 
 				encoderWorker.postMessage({cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples)});
 				encoderWorker.postMessage({cmd: 'finish'});
-				alert('encoderWorker.afterFinish');
 
 			};
 			fileReader.readAsArrayBuffer(blob);
 		}
 
 		encoderWorker.onmessage = function (e) {
-			alert('encoderWorker.onmessage');
 
 			if (e.data.cmd == 'data') {
 				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
