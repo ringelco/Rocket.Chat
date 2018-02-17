@@ -6,7 +6,6 @@ self.onmessage = function(e) {
 	switch (e.data.cmd) {
 	case 'init':
 
-		alert('lame init started!');
 		if (!e.data.config) {
 			e.data.config = { };
 		}
@@ -21,7 +20,6 @@ self.onmessage = function(e) {
 
 		Lame.init_params(mp3codec);
 
-		alert('lame init finished!');
 
 		/*console.log('Version :', Lame.get_version() + ' / ',
 			'Mode: '+Lame.get_mode(mp3codec) + ' / ',
