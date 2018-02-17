@@ -27,11 +27,15 @@ this.AudioRecorder = new class {
 	}
 
 	stop(cb) {
+		alert('kojas?');
+
 		this.recorder.stop();
 
 		if (cb != null) {
 			this.getBlob(cb);
 		}
+
+		alert('kojast 1');
 
 		this.stream.getAudioTracks()[0].stop();
 

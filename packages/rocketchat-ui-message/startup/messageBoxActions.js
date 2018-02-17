@@ -22,11 +22,13 @@ RocketChat.messageBox.actions.add('Create_new', 'Audio_message', {
 
 		if (chatMessages[RocketChat.openedRoom].recording) {
 			AudioRecorder.stop(function(blob) {
-
+				alert('sotvan 1');
+				popover.close();
 				icon.style.color = '';
 				icon.classList.remove('pulse');
-				popover.close();
 				chatMessages[RocketChat.openedRoom].recording = false;
+				alert('sotvan 2');
+
 				fileUpload([
 					{
 						file: blob,
@@ -34,12 +36,18 @@ RocketChat.messageBox.actions.add('Create_new', 'Audio_message', {
 						name: `${ TAPi18n.__('Audio record') }.mp3`
 					}
 				]);
+				alert('sotvan 3');
+
 			});
+			alert('sotvan 5');
+
 			return false;
 		}
 
 		chatMessages[RocketChat.openedRoom].recording = true;
 		AudioRecorder.start(function() {
+			alert('sotvan 0');
+
 			icon.classList.add('pulse');
 			icon.style.color = 'red';
 		});
