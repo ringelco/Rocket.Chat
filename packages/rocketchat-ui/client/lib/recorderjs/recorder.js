@@ -6,8 +6,7 @@
 	var Recorder = function (source, cfg) {
 		var config = cfg || {};
 		var bufferLen = config.bufferLen || 4096;
-		var numChannels = config.numChannels || 2;
-		numChannels = 1;
+		var numChannels = config.numChannels || 1;
 		this.context = source.context;
 		this.node = (this.context.createScriptProcessor ||
 			this.context.createJavaScriptNode).call(this.context,
@@ -84,13 +83,9 @@
 			var fileReader = new FileReader();
 
 			fileReader.onload = function () {
-
 				arrayBuffer = this.result;
-				var buffer = new Uint8Array(arrayBuffer);
-
-				var data = parseWav(buffer);
-
-				alert('mp3Worker.beforeInit');
+				var buffer = new Uint8Array(arrayBuffer),
+					data = parseWav(buffer);
 
 				encoderWorker.postMessage({
 					cmd: 'init', config: {
@@ -100,46 +95,24 @@
 						bitrate: data.bitsPerSample
 					}
 				});
-				alert('mp3Worker.before encode');
 
 				encoderWorker.postMessage({cmd: 'encode', buf: Uint8ArrayToFloat32Array(data.samples)});
-
-				alert('mp3Worker.before finish');
-
 				encoderWorker.postMessage({cmd: 'finish'});
-
+				encoderWorker.onmessage = function (e) {
+					if (e.data.cmd == 'data') {
+						var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {type: 'audio/mp3'});
+						currCallback(mp3Blob);
+					}
+				};
 			};
+
 			fileReader.readAsArrayBuffer(blob);
-		}
-
-		encoderWorker.onmessage = function (e) {
-			alert('oomad inja');
-			if (e.data.cmd == 'data') {
-				alert('oomad inja tar');
-
-				var mp3Blob = new Blob([new Uint8Array(e.data.buf)], {
-					type: 'audio/mp3'
-				});
-				currCallback(mp3Blob);
-			}
-		};
-
-		function encode64(buffer) {
-			var binary = '',
-				bytes = new Uint8Array(buffer),
-				len = bytes.byteLength;
-
-			for (var i = 0; i < len; i++) {
-				binary += String.fromCharCode(bytes[i]);
-			}
-			return window.btoa(binary);
 		}
 
 		function parseWav(wav) {
 			function readInt(i, bytes) {
 				var ret = 0,
 					shft = 0;
-
 				while (bytes) {
 					ret += wav[i] << shft;
 					shft += 8;
@@ -149,12 +122,8 @@
 				return ret;
 			}
 
-			if (readInt(20, 2) != 1) {
-				throw 'Invalid compression code, not PCM';
-			}
-			if (readInt(22, 2) != 1) {
-				throw 'Invalid number of channels, not 1';
-			}
+			if (readInt(20, 2) != 1) throw 'Invalid compression code, not PCM';
+			if (readInt(22, 2) != 1) throw 'Invalid number of channels, not 1';
 			return {
 				sampleRate: readInt(24, 4),
 				bitsPerSample: readInt(34, 2),
@@ -175,6 +144,16 @@
 		source.connect(this.node);
 		this.node.connect(this.context.destination);    //this should not be necessary
 	};
+
+	Recorder.forceDownload = function(blob, filename){
+		var url = (window.URL || window.webkitURL).createObjectURL(blob);
+		var link = window.document.createElement('a');
+		link.href = url;
+		link.download = filename || 'output.mp3';
+		var click = document.createEvent("Event");
+		click.initEvent("click", true, true);
+		link.dispatchEvent(click);
+	}
 
 	window.Recorder = Recorder;
 

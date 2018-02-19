@@ -1,6 +1,10 @@
-/* globals fileUpload KonchatNotification chatMessages popover isRtl */
+/* globals fileUpload KonchatNotification chatMessages popover isRtl AudioRecorder chatMessages fileUploadHandler*/
 import toastr from 'toastr';
 import moment from 'moment';
+
+import _ from 'underscore';
+
+let audioMessageIntervalId;
 
 function katexSyntax() {
 	if (RocketChat.katex.katex_enabled()) {
@@ -29,7 +33,7 @@ function applyMd(e, t) {
 	const [btn] = t.findAll(`.js-md[aria-label=${ this.label }]`);
 	if (btn) {
 		btn.classList.add('active');
-		setTimeout(function() {
+		setTimeout(function () {
 			btn.classList.remove('active');
 		}, 100);
 	}
@@ -266,7 +270,16 @@ Template.messageBox.helpers({
 	},
 	embeddedVersion() {
 		return RocketChat.Layout.isEmbedded();
+	},
+
+	isEmojiEnable() {
+		return RocketChat.getUserPreference(Meteor.user(), 'useEmojis');
+	},
+	isAudioMessageAllowed() {
+		return RocketChat.settings.get('FileUpload_Enabled') && RocketChat.settings.get('Message_AudioRecorderEnabled') && (!RocketChat.settings.get('FileUpload_MediaTypeWhiteList'));
 	}
+
+
 });
 
 function firefoxPasteUpload(fn) {
@@ -274,18 +287,18 @@ function firefoxPasteUpload(fn) {
 	if (!user || user[1] > 49) {
 		return fn;
 	}
-	return function(event, instance) {
+	return function (event, instance) {
 		if ((event.originalEvent.ctrlKey || event.originalEvent.metaKey) && (event.keyCode === 86)) {
 			const textarea = instance.find('textarea');
 			const {selectionStart, selectionEnd} = textarea;
 			const contentEditableDiv = instance.find('#msg_contenteditable');
 			contentEditableDiv.focus();
-			Meteor.setTimeout(function() {
+			Meteor.setTimeout(function () {
 				const pastedImg = contentEditableDiv.querySelector('img');
 				const textareaContent = textarea.value;
 				const startContent = textareaContent.substring(0, selectionStart);
 				const endContent = textareaContent.substring(selectionEnd);
-				const restoreSelection = function(pastedText) {
+				const restoreSelection = function (pastedText) {
 					textarea.value = startContent + pastedText + endContent;
 					textarea.selectionStart = selectionStart + pastedText.length;
 					return textarea.selectionEnd = textarea.selectionStart;
@@ -295,16 +308,16 @@ function firefoxPasteUpload(fn) {
 				}
 				textarea.focus;
 				if (!pastedImg || contentEditableDiv.innerHTML.length > 0) {
-					return [].slice.call(contentEditableDiv.querySelectorAll('br')).forEach(function(el) {
+					return [].slice.call(contentEditableDiv.querySelectorAll('br')).forEach(function (el) {
 						contentEditableDiv.replaceChild(new Text('\n'), el);
 						return restoreSelection(contentEditableDiv.innerText);
 					});
 				}
 				const imageSrc = pastedImg.getAttribute('src');
 				if (imageSrc.match(/^data:image/)) {
-					return fetch(imageSrc).then(function(img) {
+					return fetch(imageSrc).then(function (img) {
 						return img.blob();
-					}).then(function(blob) {
+					}).then(function (blob) {
 						return fileUpload([
 							{
 								file: blob,
@@ -322,7 +335,12 @@ function firefoxPasteUpload(fn) {
 Template.messageBox.events({
 	'click .js-message-actions .rc-popover__item, click .js-message-actions .js-message-action'(event, instance) {
 		const action = this.action || Template.parentData().action;
-		action.apply(this, [{rid: Template.parentData()._id, messageBox: instance.find('.rc-message-box'), element: event.currentTarget, event}]);
+		action.apply(this, [{
+			rid: Template.parentData()._id,
+			messageBox: instance.find('.rc-message-box'),
+			element: event.currentTarget,
+			event
+		}]);
 	},
 	'click .join'(event) {
 		event.stopPropagation();
@@ -348,7 +366,7 @@ Template.messageBox.events({
 	'click .register-anonymous'(event) {
 		event.stopPropagation();
 		event.preventDefault();
-		return Meteor.call('registerUser', {}, function(error, loginData) {
+		return Meteor.call('registerUser', {}, function (error, loginData) {
 			if (loginData && loginData.token) {
 				return Meteor.loginWithToken(loginData.token);
 			}
@@ -373,7 +391,7 @@ Template.messageBox.events({
 		return instance.isMessageFieldEmpty.set(chatMessages[this._id].isEmpty());
 	},
 	'paste .js-input-message'(e, instance) {
-		Meteor.setTimeout(function() {
+		Meteor.setTimeout(function () {
 			const input = instance.find('.js-input-message');
 			return typeof input.updateAutogrow === 'function' && input.updateAutogrow();
 		}, 50);
@@ -396,7 +414,7 @@ Template.messageBox.events({
 			return instance.isMessageFieldEmpty.set(false);
 		}
 	},
-	'keydown .js-input-message': firefoxPasteUpload(function(event, t) {
+	'keydown .js-input-message': firefoxPasteUpload(function (event, t) {
 		if ((navigator.platform.indexOf('Mac') !== -1 && event.metaKey) || (navigator.platform.indexOf('Mac') === -1 && event.ctrlKey)) {
 			const action = markdownButtons.find(action => action.command === event.key.toLowerCase() && (!action.condition || action.condition()));
 			if (action) {
@@ -449,7 +467,7 @@ Template.messageBox.events({
 				}
 			],
 			mousePosition: {
-				x: document.querySelector('.rc-message-box__textarea').getBoundingClientRect().right + 10,
+				x: document.querySelector('.rc-message-box__textarea').getBoundingClientRect().right + 40,
 				y: document.querySelector('.rc-message-box__textarea').getBoundingClientRect().top
 			},
 			customCSSProperties: {
@@ -462,10 +480,165 @@ Template.messageBox.events({
 		};
 
 		popover.open(config);
+
+	},
+	'click .rc-message-box__audio-message'(event) {
+		event.preventDefault();
+		const icon = document.querySelector('.rc-message-box__audio-message');
+		const timer = document.querySelector('.rc-message-box__timer');
+		const timer_box = document.querySelector('.rc-message-box__audio-recording');
+
+		chatMessages[RocketChat.openedRoom].recording = true;
+		AudioRecorder.start(function () {
+			const startTime = new Date;
+			timer.innerHTML = '00:00';
+			audioMessageIntervalId = setInterval(() => {
+				const now = new Date;
+				const distance = now - startTime;
+				let minutes = Math.floor(distance / (1000 * 60));
+				let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+				if (minutes < 10) {
+					minutes = `0${ minutes }`;
+				}
+				if (seconds < 10) {
+					seconds = `0${ seconds }`;
+				}
+				timer.innerHTML = `${ minutes }:${ seconds }`;
+			}, 1000);
+
+			icon.classList.add('hidden');
+			timer_box.classList.add('active');
+		});
+	},
+	'click .js-audio-message-cross'(event) {
+		event.preventDefault();
+		const icon = document.querySelector('.rc-message-box__audio-message');
+		const timer = document.querySelector('.rc-message-box__timer');
+		const timer_box = document.querySelector('.rc-message-box__audio-recording');
+
+		timer_box.classList.remove('active');
+		icon.classList.remove('hidden');
+		timer.innerHTML = '00:00';
+		if (audioMessageIntervalId) {
+			clearInterval(audioMessageIntervalId);
+		}
+
+		AudioRecorder.stop();
+		chatMessages[RocketChat.openedRoom].recording = false;
+	},
+	'click .js-audio-message-check'(event) {
+		event.preventDefault();
+		const icon = document.querySelector('.rc-message-box__audio-message');
+		const timer = document.querySelector('.rc-message-box__timer');
+		const timer_box = document.querySelector('.rc-message-box__audio-recording');
+
+		icon.classList.remove('hidden');
+		timer_box.classList.remove('active');
+
+		timer.innerHTML = '00:00';
+		if (audioMessageIntervalId) {
+			clearInterval(audioMessageIntervalId);
+		}
+
+		chatMessages[RocketChat.openedRoom].recording = false;
+		AudioRecorder.stop(function (blob) {
+			const roomId = Session.get('openedRoom');
+			const record = {
+				name: `${ TAPi18n.__('Audio record') }.mp3`,
+				size: blob.size,
+				type: 'audio/mp3',
+				rid: roomId,
+				description: ''
+			};
+			const upload = fileUploadHandler('Uploads', record, blob);
+			let uploading = Session.get('uploading') || [];
+			uploading.push({
+				id: upload.id,
+				name: upload.getFileName(),
+				percentage: 0
+			});
+			Session.set('uploading', uploading);
+			upload.onProgress = function (progress) {
+				uploading = Session.get('uploading');
+
+				const item = _.findWhere(uploading, {id: upload.id});
+				if (item != null) {
+					item.percentage = Math.round(progress * 100) || 0;
+					return Session.set('uploading', uploading);
+				}
+			};
+
+			upload.start(function (error, file, storage) {
+				if (error) {
+					let uploading = Session.get('uploading');
+					if (!Array.isArray(uploading)) {
+						uploading = [];
+					}
+
+					const item = _.findWhere(uploading, {id: upload.id});
+
+					if (_.isObject(item)) {
+						item.error = error.message;
+						item.percentage = 0;
+					} else {
+						uploading.push({
+							error: error.error,
+							percentage: 0
+						});
+					}
+
+					Session.set('uploading', uploading);
+					return;
+				}
+
+
+				if (file) {
+					Meteor.call('sendFileMessage', roomId, storage, file, () => {
+						Meteor.setTimeout(() => {
+							const uploading = Session.get('uploading');
+							if (uploading !== null) {
+								const item = _.findWhere(uploading, {
+									id: upload.id
+								});
+								return Session.set('uploading', _.without(uploading, item));
+							}
+						}, 2000);
+					});
+				}
+			});
+
+			Tracker.autorun(function (c) {
+				const cancel = Session.get(`uploading-cancel-${ upload.id }`);
+				if (cancel) {
+					let item;
+					upload.stop();
+					c.stop();
+
+					uploading = Session.get('uploading');
+					if (uploading != null) {
+						item = _.findWhere(uploading, {id: upload.id});
+						if (item != null) {
+							item.percentage = 0;
+						}
+						Session.set('uploading', uploading);
+					}
+
+					return Meteor.setTimeout(function () {
+						uploading = Session.get('uploading');
+						if (uploading != null) {
+							item = _.findWhere(uploading, {id: upload.id});
+							return Session.set('uploading', _.without(uploading, item));
+						}
+					}, 1000);
+				}
+			});
+		});
+		return false;
+
 	}
 });
 
-Template.messageBox.onRendered(function() {
+Template.messageBox.onRendered(function () {
 	chatMessages[RocketChat.openedRoom] = chatMessages[RocketChat.openedRoom] || new ChatMessages;
 	chatMessages[RocketChat.openedRoom].input = this.$('.js-input-message').autogrow({
 		animate: true,
@@ -477,14 +650,14 @@ Template.messageBox.onRendered(function() {
 	chatMessages[RocketChat.openedRoom].restoreText(RocketChat.openedRoom);
 });
 
-Template.messageBox.onCreated(function() {
+Template.messageBox.onCreated(function () {
 	this.isMessageFieldEmpty = new ReactiveVar(true);
 	this.sendIcon = new ReactiveVar(false);
 });
 
-Meteor.startup(function() {
+Meteor.startup(function () {
 	RocketChat.Geolocation = new ReactiveVar(false);
-	Tracker.autorun(function() {
+	Tracker.autorun(function () {
 		const MapView_GMapsAPIKey = RocketChat.settings.get('MapView_GMapsAPIKey');
 		if (RocketChat.settings.get('MapView_Enabled') === true && MapView_GMapsAPIKey && MapView_GMapsAPIKey.length && navigator.geolocation && navigator.geolocation.getCurrentPosition) {
 			const success = (position) => {
@@ -504,8 +677,8 @@ Meteor.startup(function() {
 			return RocketChat.Geolocation.set(false);
 		}
 	});
-	RocketChat.callbacks.add('enter-room', function() {
-		setTimeout(()=> {
+	RocketChat.callbacks.add('enter-room', function () {
+		setTimeout(() => {
 			if (chatMessages[RocketChat.openedRoom].input) {
 				chatMessages[RocketChat.openedRoom].input.focus();
 			}

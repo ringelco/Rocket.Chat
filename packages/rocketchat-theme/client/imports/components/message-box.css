@@ -136,6 +136,10 @@
 		& .rc-input__icon-svg--plus {
 			transition: transform 0.2s linear;
 		}
+
+		&.cross {
+			color: red;
+		}
 	}
 
 	&__action-menu {
@@ -148,6 +152,31 @@
 
 	& [data-small] {
 		display: none;
+	}
+
+	&__audio-recording {
+		display: flex;
+		position: relative;
+		z-index: -1;
+		&.active{
+			z-index: 2;
+		}
+	}
+
+	&__audio-message{
+		&.hidden{
+			z-index: -1;
+		}
+	}
+
+	&__timer-box{
+		display: flex;
+		width: 50px;
+	}
+
+	&__timer-dot{
+		font-size: 1.5em;
+		color: #d60000;
 	}
 }
 
