@@ -422,6 +422,7 @@ RocketChat.settings.addGroup('General', function() {
 		type: 'action',
 		actionText: 'Restart_the_server'
 	});
+
 	this.section('UTF8', function() {
 		this.add('UTF8_Names_Validation', '[0-9a-zA-Z-_.\u0600-\u06FF\u0698\u067E\u0686\u06AF]+', {
 			type: 'string',
