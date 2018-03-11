@@ -428,7 +428,7 @@ RocketChat.settings.addGroup('General', function() {
 			'public': true,
 			i18nDescription: 'UTF8_Names_Validation_Description'
 		});
-		return this.add('UTF8_Names_Slugify', true, {
+		return this.add('UTF8_Names_Slugify', false, {
 			type: 'boolean',
 			'public': true
 		});
