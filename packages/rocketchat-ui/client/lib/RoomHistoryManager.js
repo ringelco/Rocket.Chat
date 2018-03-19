@@ -3,7 +3,7 @@ import _ from 'underscore';
 
 export const RoomHistoryManager = new class {
 	constructor() {
-		this.defaultLimit = 5;
+		this.defaultLimit = 10;
 		this.histories = {};
 	}
 	getRoom(rid) {
