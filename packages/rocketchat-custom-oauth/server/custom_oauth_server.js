@@ -104,12 +104,8 @@ export class CustomOAuth {
 			response = HTTP.post(this.tokenPath, allOptions);
 		} catch (err) {
 
-			let optionLog;
-			for (let option in allOptions)
-			{
-				optionLog = 'key:'  + option[0] + ' value: ' + option[1]+ '\r\n';
-			}
-			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message }.${ err.code}. Monem Error1: ${ allOptions['auth'] } allOption: ${ optionLog } `);
+
+			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message }.${ err.code}. Monem Error1:  allOption: ${ JSON.stringify(allOptions) } `);
 			throw _.extend(error, {response: err.response});
 		}
 
