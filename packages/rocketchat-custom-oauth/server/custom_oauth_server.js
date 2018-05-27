@@ -103,7 +103,7 @@ export class CustomOAuth {
 		try {
 			response = HTTP.post(this.tokenPath, allOptions);
 		} catch (err) {
-			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message }. Monem Error1: ${ allOptions['auth'] }`);
+			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message }.${ err.code}. Monem Error1: ${ allOptions['auth'] } allOption: ${ allOptions } `);
 			throw _.extend(error, {response: err.response});
 		}
 
