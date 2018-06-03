@@ -105,7 +105,7 @@ export class CustomOAuth {
 		} catch (err) {
 
 
-			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message }.${ err.code}. Monem Error1:  allOption: ${ JSON.stringify(allOptions) } `);
+			const error = new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ err.message } `);
 			throw _.extend(error, {response: err.response});
 		}
 
@@ -117,7 +117,7 @@ export class CustomOAuth {
 		}
 
 		if (data.error) { //if the http response was a json object with an error attribute
-			throw new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }. ${ data.error } Monem Error2: ${ allOptions['auth'] }`);
+			throw new Error(`Failed to complete OAuth handshake with ${ this.name } at ${ this.tokenPath }`);
 		} else {
 			return data.access_token;
 		}
