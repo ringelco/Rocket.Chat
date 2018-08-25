@@ -1247,7 +1247,7 @@ RocketChat.settings.addGroup('Layout', function() {
 			type: 'string',
 			'public': true
 		});
-		this.add('Layout_Home_Body', 'Welcome to Rocket.Chat <br> Go to APP SETTINGS -> Layout to customize this intro.', {
+		this.add('Layout_Home_Body', 'به سیستم پشتیبانی لیمومی خوش آمدید <br> .', {
 			type: 'code',
 			code: 'text/html',
 			multiline: true,
